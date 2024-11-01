@@ -51,6 +51,7 @@ addIdsToCsv();
 // Serve static files from the client folder
 app.use(express.static(path.join(__dirname, '..', '..', 'client')));
 
+
 // Serve index.html for the root URL
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '..', '..', 'client', 'index.html'));
@@ -58,7 +59,7 @@ app.get('/', (req, res) => {
 
 // Get all destinations
 app.get('/api/destinations', (req, res) => {
-    res.send(destinations);
+    res.json(destinations);
 });
 
 app.get('/api/destinations/:id/details',(req,res)=>{
@@ -88,9 +89,9 @@ app.get('/api/destinations/:id/details',(req,res)=>{
         
         
 
-        res.send(listInfo);
+        res.json(listInfo);
     } else{
-        res.status(404).send({message: "Destination ID not found"});
+        res.status(404).json({message: "Destination ID not found"});
     }
 });
 
@@ -108,16 +109,16 @@ app.get('/api/destinations/:id/coordinates', (req, res) => {
             }
         ];
         
-        res.send(location);
+        res.json(location);
     } else {
-        res.status(404).send({ message: "Destination ID not found" });
+        res.status(404).json({ message: "Destination ID not found" });
     }
 });
 
 // Get all unique country names from the destinations array
 app.get('/api/countries', (req, res) => {
     const countries = [...new Set(destinations.map(destination => destination.Country))];
-    res.send(countries);
+    res.json(countries);
 });
 
 // Endpoint to match destinations by a field and pattern, with an optional limit
@@ -125,7 +126,7 @@ app.get('/api/match', (req, res) => {
     const { field, pattern, n } = req.query;
 
     if (!field || !pattern) {
-        return res.status(400).send({ error: "Field and pattern are required parameters." });
+        return res.status(400).json({ error: "Field and pattern are required parameters." });
     }
 
     const regex = new RegExp(pattern, 'i');
@@ -141,7 +142,7 @@ app.get('/api/match', (req, res) => {
     }
 
     const matchingIDs = matchingDestinations.map(destination => destination.ID);
-    res.send(matchingIDs);
+    res.json(matchingIDs);
 });
 
 // Function to read lists from file
@@ -165,7 +166,7 @@ app.post('/api/lists', (req, res) => {
 
     // Validate input
     if (!listName || !Array.isArray(destinationIDs)) {
-        return res.status(400).send({ error: "List name and an array of destination IDs are required." });
+        return res.status(400).json({ error: "List name and an array of destination IDs are required." });
     }
 
     // Read existing lists from file
@@ -173,7 +174,7 @@ app.post('/api/lists', (req, res) => {
 
     // Check if the list already exists
     if (lists[listName]) {
-        return res.status(400).send({ error: `List '${listName}' already exists.` });
+        return res.status(400).json({ error: `List '${listName}' already exists.` });
     }
 
     // Create a new list with the provided destination IDs
@@ -182,7 +183,7 @@ app.post('/api/lists', (req, res) => {
     // Write updated lists to file
     writeListsToFile(lists);
 
-    res.status(201).send({
+    res.status(201).json({
         message: `List '${listName}' created successfully.`,
         listName,
         destinationIDs
@@ -196,7 +197,7 @@ app.put('/api/lists/:listName', (req, res) => {
 
     // Validate input
     if (!destinationIDs || !Array.isArray(destinationIDs)) {
-        return res.status(400).send({ error: "An array of destination IDs is required." });
+        return res.status(400).json({ error: "An array of destination IDs is required." });
     }
 
     // Read existing lists from file
@@ -204,7 +205,7 @@ app.put('/api/lists/:listName', (req, res) => {
 
     // Check if the list exists
     if (!lists[listName]) {
-        return res.status(404).send({ error: `List '${listName}' does not exist.` });
+        return res.status(404).json({ error: `List '${listName}' does not exist.` });
     }
 
     // Replace the destination IDs in the existing list
@@ -213,7 +214,7 @@ app.put('/api/lists/:listName', (req, res) => {
     // Write updated lists to file
     writeListsToFile(lists);
 
-    res.status(200).send({
+    res.status(200).json({
         message: `List '${listName}' updated successfully.`,
         listName,
         destinationIDs
@@ -223,7 +224,7 @@ app.put('/api/lists/:listName', (req, res) => {
 // Endpoint to retrieve all lists
 app.get('/api/lists', (req, res) => {
     const lists = readListsFromFile(); 
-    res.status(200).send(lists);
+    res.status(200).json(lists);
 });
 
 
@@ -237,7 +238,7 @@ app.delete('/api/lists/:listName',(req,res)=>{
 
     //check if the list exists
     if (!lists[listName]) {
-        return res.status(404).send({ error: `List '${listName}' not found.` });
+        return res.status(404).json({ error: `List '${listName}' not found.` });
     }
 
     //Delete the list from the data 
@@ -246,7 +247,7 @@ app.delete('/api/lists/:listName',(req,res)=>{
     //write the updated lists back to the file or database
     writeListsToFile(lists);//writes lists back to the json file 
 
-    res.status(200).send({message: `List '${listName}' deleted succesfully.`})
+    res.status(200).json({message: `List '${listName}' deleted succesfully.`})
 });
 
 // Endpoint to add a destination to an existing list, or create the list if it doesn't exist
@@ -256,7 +257,7 @@ app.post('/api/lists/:listName/add', (req, res) => {
 
     // Validate input
     if (!destinationID) {
-        return res.status(400).send({ error: "Destination ID is required." });
+        return res.status(400).json({ error: "Destination ID is required." });
     }
 
     // Read existing lists from file
@@ -270,14 +271,14 @@ app.post('/api/lists/:listName/add', (req, res) => {
         if (!lists[listName].includes(destinationID)) {
             lists[listName].push(destinationID);
         } else {
-            return res.status(400).send({ error: `Destination ID ${destinationID} is already in the list '${listName}'.` });
+            return res.status(400).json({ error: `Destination ID ${destinationID} is already in the list '${listName}'.` });
         }
     }
 
     // Write updated lists to file
     writeListsToFile(lists);
 
-    res.status(200).send({
+    res.status(200).json({
         message: `Destination ID ${destinationID} added to list '${listName}' successfully.`,
         listName,
         destinationIDs: lists[listName]
