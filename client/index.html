@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>European Travel Destinations</title>
+    <link rel="stylesheet" href="style.css">
+    
+    <!-- Include Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    
+    <!-- Include Leaflet JS -->
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  </head>
+
+  <body>
+    <h1>Travel Destinations in Europe</h1>
+
+    <!-- Filter and search controls -->
+    <div id="filter-container">
+      <input type="text" id="search-input" placeholder="Search destinations">
+    </div>
+
+    <div class="filters">
+      <label for="field-dropdown">Field:</label>
+      <select id="field-dropdown">
+        <option value="Region">Region</option>
+        <option value="Country">Country</option>
+        <option value="Category">Category</option>
+        <option value="Approximate Annual Tourists">Approximate Annual Tourists</option>
+        <option value="Currency">Currency</option>
+        <option value="Majority Religion">Majority Religion</option>
+        <option value="Famous Foods">Famous Foods</option>
+        <option value="Language">Language</option>
+        <option value="Best Time to Visit">Best Time to Visit</option>
+        <option value="Cost of Living">Cost of Living</option>
+        <option value="Safety">Safety</option>
+      </select>
+
+      <label for="pattern-input">Value:</label>
+      <input type="text" id="pattern-input">
+
+      <label for="limit-input">Results per page:</label>
+      <select id="limit-input">
+        <option value="5">5 Items Per Page</option>
+        <option value="10">10 Items Per Page</option>
+        <option value="15">15 Items Per Page</option>
+        <option value="20">20 Items Per Page</option>
+      </select>
+
+      <button id="filter-button">Filter</button>
+    </div>
+
+    <!-- Main container for the two-column layout -->
+    <div id="main-container">
+      <!-- Left-side container for creating lists -->
+      <div id="list-creation">
+        <h2>Create or Update List</h2>
+        <form id="create-list-form">
+          <input type="text" id="list-name" placeholder="Enter list name" required />
+          <button type="button" id="create-list-button">Create List</button>
+          <button type="button" id="update-list-button">Update List</button>
+        </form>
+
+        <!-- Sorting Options -->
+        <div id="sort-options">
+          <label for="sort-field">Sort By:</label>
+          <select id="sort-field">
+            <option value="name">Name</option>
+            <option value="region">Region</option>
+            <option value="country">Country</option>
+          </select>
+          <button type="button" id="sort-button">Sort</button>
+        </div>
+
+        <div id="user-lists">
+          <ul id="lists-container"></ul>
+        </div>
+      </div>
+
+      <!-- Right-side container for destinations -->
+      <div id="destination-section">
+        <!-- Pagination Controls -->
+        <div id="pagination-controls">
+          <button id="prev-page" disabled>Previous</button>
+          <span id="page-info"></span>
+          <button id="next-page">Next</button>
+        </div>
+
+        <!-- Destination List -->
+        <ul id="destination-list"></ul>
+
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
+
